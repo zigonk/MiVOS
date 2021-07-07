@@ -41,7 +41,7 @@ class YouTubeVOSTestDataset(Dataset):
                     frames = video_info['frames']
                     target_frame = frames[ind]
                     left_ref = frames[max(0, ind - 1)]
-                    right_ref = frames[min(ind + 1, len(video_info) - 1)]
+                    right_ref = frames[min(ind + 1, len(frames) - 1)]
                     info = {
                         'vid': vid,
                         'eid': eid,
