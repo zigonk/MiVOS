@@ -39,7 +39,7 @@ parser.add_argument('--range', default=None, type=int)
 parser.add_argument('--mem_freq', default=None, type=int)
 parser.add_argument('--start', default=None, type=int)
 parser.add_argument('--end', default=None, type=int)
-parser.add_argument('--yv_part', default=0, type=int)
+parser.add_argument('--yv_part', default='0', type=str)
 args = parser.parse_args()
 
 davis_path = args.davis_root
