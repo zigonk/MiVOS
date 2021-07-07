@@ -39,6 +39,7 @@ parser.add_argument('--range', default=None, type=int)
 parser.add_argument('--mem_freq', default=None, type=int)
 parser.add_argument('--start', default=None, type=int)
 parser.add_argument('--end', default=None, type=int)
+parser.add_argument('--yv_part', default=0, type=int)
 args = parser.parse_args()
 
 davis_path = args.davis_root
@@ -46,6 +47,7 @@ bl_path = args.bl_root
 yv_im_path = args.yv_im_path
 yv_mask_path = args.yv_mask_path
 yv_metadata = args.yv_metadata
+yv_part = args.yv_part
 out_path = args.output
 dataset_option = args.dataset
 
@@ -61,13 +63,13 @@ if dataset_option == 'DAVIS':
 elif dataset_option == 'BL':
     test_dataset = BLTestDataset(bl_path, start=args.start, end=args.end)
 elif dataset_option == 'YVOS':
-    test_dataset = YouTubeVOSTestDataset(yv_im_path, yv_mask_path, yv_metadata)
+    test_dataset = YouTubeVOSTestDataset(yv_im_path, yv_mask_path, yv_metadata, yv_part)
 else:
     print('Use --dataset DAVIS or --dataset BL')
     raise NotImplementedError
 
 # test_dataset = BLTestDataset(args.bl, start=args.start, end=args.end, subset=load_sub_bl())
-test_loader = DataLoader(test_dataset, batch_size=1, shuffle=False, num_workers=2, pin_memory=False)
+test_loader = DataLoader(test_dataset, batch_size=1, shuffle=False, num_workers=4, pin_memory=False)
 
 # Load our checkpoint
 prop_saved = torch.load(args.model)
