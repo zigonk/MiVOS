@@ -2,6 +2,7 @@
 Generate fusion data for the DAVIS dataset.
 """
 
+# from dataset.yv_test_dataset import YouTubeVOSTestDataset
 import os
 from os import path
 from argparse import ArgumentParser
@@ -15,6 +16,7 @@ import cv2
 from model.propagation.prop_net import PropagationNetwork
 from dataset.davis_test_dataset import DAVISTestDataset
 from dataset.bl_test_dataset import BLTestDataset
+from dataset.custom_yv_test_dataset import YouTubeVOSTestDataset
 from generation.fusion_generator import FusionGenerator
 
 from progressbar import progressbar
@@ -27,6 +29,9 @@ parser = ArgumentParser()
 parser.add_argument('--model', default='saves/propagation_model.pth')
 parser.add_argument('--davis_root', default='../DAVIS/2017')
 parser.add_argument('--bl_root', default='../BL30K')
+parser.add_argument('--yv_im_path', default='')
+parser.add_argument('--yv_mask_path', default='')
+parser.add_argument('--yv_metadata', default='')
 parser.add_argument('--dataset', help='DAVIS/BL')
 parser.add_argument('--output')
 parser.add_argument('--separation', default=None, type=int)
@@ -38,6 +43,9 @@ args = parser.parse_args()
 
 davis_path = args.davis_root
 bl_path = args.bl_root
+yv_im_path = args.yv_im_path
+yv_mask_path = args.yv_mask_path
+yv_metadata = args.yv_metadata
 out_path = args.output
 dataset_option = args.dataset
 
@@ -52,6 +60,8 @@ if dataset_option == 'DAVIS':
     test_dataset = DAVISTestDataset(davis_path+'/trainval', imset='2017/train.txt')
 elif dataset_option == 'BL':
     test_dataset = BLTestDataset(bl_path, start=args.start, end=args.end)
+elif dataset_option == 'YVOS':
+    test_dataset = YouTubeVOSTestDataset(yv_im_path, yv_mask_path, yv_metadata)
 else:
     print('Use --dataset DAVIS or --dataset BL')
     raise NotImplementedError
@@ -70,12 +80,13 @@ for data in progressbar(test_loader, max_value=len(test_loader), redirect_stdout
     rgb = data['rgb'].cuda()
     msk = data['gt'][0].cuda()
     info = data['info']
-
+    query_info = data['query_info']
     total_t = rgb.shape[1]
     processor = FusionGenerator(prop_model, rgb, args.mem_freq)
 
     for frame in range(0, total_t, args.separation):
-
+        if (frame == info['target_id'][0]):
+            continue
         usable_keys = []
         for k in range(msk.shape[0]):
             if (msk[k,frame] > 0.5).sum() > 10*10:
@@ -91,7 +102,7 @@ for data in progressbar(test_loader, max_value=len(test_loader), redirect_stdout
         this_msk = msk[usable_keys]
 
         # Make this directory
-        this_out_path = path.join(out_path, info['name'][0], '%05d'%frame)
+        this_out_path = path.join(out_path, info['name'][0], info['eid'][0])
         os.makedirs(this_out_path, exist_ok=True)
 
         # Propagate
@@ -106,13 +117,10 @@ for data in progressbar(test_loader, max_value=len(test_loader), redirect_stdout
         out_probs = processor.interact_mask(this_msk[:,frame], frame, left_limit, right_limit)
 
         for kidx, obj_id in enumerate(usable_keys):
-            obj_out_path = path.join(this_out_path, '%05d'%(obj_id+1))
-            os.makedirs(obj_out_path, exist_ok=True)
             prob_Es = (out_probs[kidx+1]*255).cpu().numpy().astype(np.uint8)
 
-            for f in pred_range:
-                img_E = Image.fromarray(prob_Es[f])
-                img_E.save(os.path.join(obj_out_path, '{:05d}.png'.format(f)))
+            img_E = Image.fromarray(prob_Es[info['target_id'][0]])
+            img_E.save(os.path.join(this_out_path, '{}.png'.format(info['target_frame'][0])))
 
         del out_probs
 
