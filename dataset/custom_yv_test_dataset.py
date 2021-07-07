@@ -31,10 +31,11 @@ class YouTubeVOSTestDataset(Dataset):
             frames = sorted(os.listdir(os.path.join(self.image_dir, vid)))
             self.frames[vid] = frames
 
-            _mask = np.array(Image.open(path.join(self.mask_dir, vid, '0', frames[0].replace('.jpg', '.png'))).convert("P"))
-            self.shape[vid] = np.shape(_mask)
             
             video_info = self.metadata['videos'][vid]
+
+            _mask = np.array(Image.open(path.join(self.mask_dir, vid, '0', video_info['frames'][0] + '.png')).convert("P"))
+            self.shape[vid] = np.shape(_mask)
             for eid in video_info['expressions'].keys():
                 for ind in range(len(video_info['frames'])):
                     frames = video_info['frames']
