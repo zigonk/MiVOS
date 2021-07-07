@@ -51,7 +51,7 @@ dataset_option = args.dataset
 
 # Simple setup
 os.makedirs(out_path, exist_ok=True)
-palette = Image.open(path.expanduser(davis_path+'/trainval/Annotations/480p/blackswan/00000.png')).getpalette()
+palette = Image.open(path.expanduser(yv_mask_path+'/31e0beaf99/0/00000.png')).getpalette()
 
 torch.autograd.set_grad_enabled(False)
 
