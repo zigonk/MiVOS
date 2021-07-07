@@ -123,5 +123,4 @@ for data in progressbar(test_loader, max_value=len(test_loader), redirect_stdout
 
         del out_probs
 
-    print(info['name'][0])
     torch.cuda.empty_cache()
