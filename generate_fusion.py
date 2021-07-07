@@ -80,7 +80,6 @@ for data in progressbar(test_loader, max_value=len(test_loader), redirect_stdout
     rgb = data['rgb'].cuda()
     msk = data['gt'][0].cuda()
     info = data['info']
-    query_info = data['query_info']
     total_t = rgb.shape[1]
     processor = FusionGenerator(prop_model, rgb, args.mem_freq)
 
