@@ -24,7 +24,6 @@ class YouTubeVOSTestDataset(Dataset):
 
         vid_list = sorted(os.listdir(self.image_dir))
         # Pre-reading
-        self.log_message("Init dataset loader")
         for vid in vid_list:
             frames = sorted(os.listdir(os.path.join(self.image_dir, vid)))
             self.frames[vid] = frames
@@ -33,14 +32,11 @@ class YouTubeVOSTestDataset(Dataset):
             first_mask = os.listdir(path.join(self.mask_dir, vid))[0]
             _mask = np.array(Image.open(path.join(self.mask_dir, vid, first_mask)).convert("P"))
             self.shape[vid] = np.shape(_mask)
-        self.log_message("Finish")
+
         self.im_transform = transforms.Compose([
             transforms.ToTensor(),
             im_normalization,
         ])
-    
-    def log_message(self, msg):
-        print(msg)
 
     # From STM's code
     def To_onehot(self, mask, labels):
