@@ -28,8 +28,8 @@ class YouTubeVOSTestDataset(Dataset):
         vid_list = ['a9f23c9150']
         # Pre-reading
         for vid in vid_list:
-            frames = sorted(os.listdir(os.path.join(self.image_dir, vid)))
-            self.frames[vid] = frames
+            vid_frames = sorted(os.listdir(os.path.join(self.image_dir, vid)))
+            self.frames[vid] = vid_frames
 
             
             video_info = self.metadata['videos'][vid]
@@ -97,7 +97,9 @@ class YouTubeVOSTestDataset(Dataset):
         print(start_ind)
         print(end_ind)
         print(target_frame)
-        print(frames[start_ind:end_ind+1])
+        print(left_ref)
+        print(right_ref)
+        print(frames)
         for i, f in enumerate(frames[start_ind:end_ind+1]):
             img = Image.open(path.join(vid_im_path, f)).convert('RGB')
             images.append(self.im_transform(img))
