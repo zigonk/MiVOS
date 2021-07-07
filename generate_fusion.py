@@ -67,7 +67,7 @@ else:
     raise NotImplementedError
 
 # test_dataset = BLTestDataset(args.bl, start=args.start, end=args.end, subset=load_sub_bl())
-test_loader = DataLoader(test_dataset, batch_size=1, shuffle=False, num_workers=4, pin_memory=False)
+test_loader = DataLoader(test_dataset, batch_size=1, shuffle=False, num_workers=2, pin_memory=False)
 
 # Load our checkpoint
 prop_saved = torch.load(args.model)
