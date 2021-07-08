@@ -89,23 +89,10 @@ for data in progressbar(test_loader, max_value=len(test_loader), redirect_stdout
     # Make this directory
     this_out_path = path.join(out_path, info['name'][0], info['eid'][0])
     os.makedirs(this_out_path, exist_ok=True)
-    print(os.path.join(this_out_path, '{}.png'.format(info['target_frame'][0])))
     if (os.path.exists(os.path.join(this_out_path, '{}.png'.format(info['target_frame'][0])))):
         continue
-    print(os.path.join(this_out_path, '{}.png'.format(info['target_frame'][0])))
     # Push mask of target id into memory
-    usable_keys = []
-    for k in range(msk.shape[0]):
-        if (msk[k, target_id] > 0.5).sum() > 10*10:
-            usable_keys.append(k)
-    if len(usable_keys) == 0:
-        continue
-    if len(usable_keys) > 5:
-        # Memory limit
-        usable_keys = usable_keys[:5]
-
-    k = len(usable_keys)
-    processor.reset(k)
+    processor.reset(1)
     this_msk = msk[usable_keys]
     processor.interact_mask(this_msk[:, target_id], target_id, target_id, target_id)
     if (previous_mask is not None) and target_id != 0:
@@ -150,7 +137,7 @@ for data in progressbar(test_loader, max_value=len(test_loader), redirect_stdout
             img_E.save(os.path.join(this_out_path, '{}.png'.format(info['target_frame'][0])))
 
         del out_probs
-    
+    print(previous_mask)
     if (previous_mask is None):
         original_masks = ((msk[0] > 0.5) * 255).cpu().numpy().astype(np.uint8)
         img_E = Image.fromarray(original_masks[target_id][0])
