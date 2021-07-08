@@ -87,7 +87,7 @@ for data in progressbar(test_loader, max_value=len(test_loader), redirect_stdout
     processor = FusionGenerator(prop_model, rgb, args.mem_freq)
     previous_mask = None
     # Push mask of target id into memory
-    if (os.path.exists(os.path.join(this_out_path, '{}.png'.format(info['target_frame'][0]))):
+    if (os.path.exists(os.path.join(this_out_path, '{}.png'.format(info['target_frame'][0])))):
         continue
     usable_keys = []
     for k in range(msk.shape[0]):
