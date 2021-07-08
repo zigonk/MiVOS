@@ -89,9 +89,10 @@ for data in progressbar(test_loader, max_value=len(test_loader), redirect_stdout
     # Make this directory
     this_out_path = path.join(out_path, info['name'][0], info['eid'][0])
     os.makedirs(this_out_path, exist_ok=True)
-    # Push mask of target id into memory
     if (os.path.exists(os.path.join(this_out_path, '{}.png'.format(info['target_frame'][0])))):
         continue
+    print(os.path.join(this_out_path, '{}.png'.format(info['target_frame'][0])))
+    # Push mask of target id into memory
     usable_keys = []
     for k in range(msk.shape[0]):
         if (msk[k, target_id] > 0.5).sum() > 10*10:
