@@ -107,7 +107,7 @@ class YouTubeVOSTestDataset(Dataset):
             fid = f.replace('.jpg', '')
             if (fid == target_frame):
                 info['target_id'] = i
-            if path.exists(mask_file) and (fid in [left_ref, right_ref]):
+            if path.exists(mask_file) and (fid in [left_ref, right_ref, target_frame]):
                 masks.append(np.array(Image.open(mask_file).convert('P'), dtype=np.uint8))
                 this_labels = np.unique(masks[-1])
                 this_labels = this_labels[this_labels!=0]

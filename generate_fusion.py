@@ -80,13 +80,39 @@ prop_model.load_state_dict(prop_saved)
 for data in progressbar(test_loader, max_value=len(test_loader), redirect_stdout=True):
 
     rgb = data['rgb'].cuda()
-    msk = data['gt'][0].cuda()
+    msk = data['gt'][0]
     info = data['info']
     total_t = rgb.shape[1]
+    target_id = info['target_id'][0]
     processor = FusionGenerator(prop_model, rgb, args.mem_freq)
+    previous_mask = None
+    # Push mask of target id into memory
+    usable_keys = []
+    for k in range(msk.shape[0]):
+        if (msk[k, target_id] > 0.5).sum() > 10*10:
+            usable_keys.append(k)
+    if len(usable_keys) == 0:
+        continue
+    if len(usable_keys) > 5:
+        # Memory limit
+        usable_keys = usable_keys[:5]
 
+    k = len(usable_keys)
+    processor.reset(k)
+    this_msk = msk[usable_keys]
+    processor.interact_mask(this_msk[:, target_id], target_id, target_id, target_id)
+    if (previous_mask is not None) and target_id != 0:
+        msk[:,0] = torch.from_numpy(test_dataset.All_to_onehot(previous_mask[np.new_axis,:], info['labels'][0])).float()
+
+    # Make this directory
+        this_out_path = path.join(out_path, info['name'][0], info['eid'][0])
+        os.makedirs(this_out_path, exist_ok=True)
+
+    # Fused mask from two frames nearby
+    previous_mask = None
+    msk.cuda()
     for frame in range(0, total_t, args.separation):
-        if (frame == info['target_id'][0]):
+        if (frame == target_id):
             continue
         usable_keys = []
         for k in range(msk.shape[0]):
@@ -102,9 +128,6 @@ for data in progressbar(test_loader, max_value=len(test_loader), redirect_stdout
         processor.reset(k)
         this_msk = msk[usable_keys]
 
-        # Make this directory
-        this_out_path = path.join(out_path, info['name'][0], info['eid'][0])
-        os.makedirs(this_out_path, exist_ok=True)
 
         # Propagate
         if dataset_option == 'DAVIS':
@@ -119,10 +142,16 @@ for data in progressbar(test_loader, max_value=len(test_loader), redirect_stdout
 
         for kidx, obj_id in enumerate(usable_keys):
             prob_Es = ((out_probs[kidx+1] > 0.5) *255).cpu().numpy().astype(np.uint8)
-
-            img_E = Image.fromarray(prob_Es[info['target_id'][0]])
+            previous_mask = prob_Es[target_id]
+            img_E = Image.fromarray(prob_Es[target_id])
             img_E.save(os.path.join(this_out_path, '{}.png'.format(info['target_frame'][0])))
 
         del out_probs
+    
+    if (previous_mask is None):
+        original_masks = (msk > 0.5 * 255).cpu().numpy().astype(np.uint8)
+        img_E = Image.fromarray(original_masks[target_id])
+        img_E.save(os.path.join(this_out_path, '{}.png'.format(info['target_frame'][0])))
+
 
     torch.cuda.empty_cache()
