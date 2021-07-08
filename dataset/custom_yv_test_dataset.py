@@ -28,7 +28,7 @@ class YouTubeVOSTestDataset(Dataset):
         vid_list['1'] = vid_list['0'][:70]
         vid_list['2'] = vid_list['0'][70:140]
         vid_list['3'] = vid_list['0'][140:]
-        # vid_list = ['a9f23c9150']
+        vid_list['test'] = ['a9f23c9150']
         # Pre-reading
         print('Init dataset loader')
         for vid in vid_list[part]:
