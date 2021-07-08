@@ -87,6 +87,8 @@ for data in progressbar(test_loader, max_value=len(test_loader), redirect_stdout
     processor = FusionGenerator(prop_model, rgb, args.mem_freq)
     previous_mask = None
     # Push mask of target id into memory
+    if (os.path.exists(os.path.join(this_out_path, '{}.png'.format(info['target_frame'][0]))):
+        continue
     usable_keys = []
     for k in range(msk.shape[0]):
         if (msk[k, target_id] > 0.5).sum() > 10*10:
@@ -149,7 +151,8 @@ for data in progressbar(test_loader, max_value=len(test_loader), redirect_stdout
         del out_probs
     
     if (previous_mask is None):
-        original_masks = (msk[0] > 0.5 * 255).cpu().numpy().astype(np.uint8)
+        original_masks = ((msk > 0.5) * 255).cpu().numpy().astype(np.uint8)
+        print(original_masks.shape)
         img_E = Image.fromarray(original_masks[target_id])
         img_E.save(os.path.join(this_out_path, '{}.png'.format(info['target_frame'][0])))
 
