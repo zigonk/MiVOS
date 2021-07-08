@@ -89,8 +89,8 @@ for data in progressbar(test_loader, max_value=len(test_loader), redirect_stdout
     # Make this directory
     this_out_path = path.join(out_path, info['name'][0], info['eid'][0])
     os.makedirs(this_out_path, exist_ok=True)
-    if (os.path.exists(os.path.join(this_out_path, '{}.png'.format(info['target_frame'][0])))):
-        continue
+    # if (os.path.exists(os.path.join(this_out_path, '{}.png'.format(info['target_frame'][0])))):
+    #     continue
     # Push mask of target id into memory
     processor.reset(1)
     this_msk = msk[usable_keys]
