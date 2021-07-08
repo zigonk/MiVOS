@@ -105,8 +105,8 @@ for data in progressbar(test_loader, max_value=len(test_loader), redirect_stdout
         msk[:,0] = torch.from_numpy(test_dataset.All_to_onehot(previous_mask[np.new_axis,:], info['labels'][0])).float()
 
     # Make this directory
-        this_out_path = path.join(out_path, info['name'][0], info['eid'][0])
-        os.makedirs(this_out_path, exist_ok=True)
+    this_out_path = path.join(out_path, info['name'][0], info['eid'][0])
+    os.makedirs(this_out_path, exist_ok=True)
 
     # Fused mask from two frames nearby
     previous_mask = None
