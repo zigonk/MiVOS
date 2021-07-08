@@ -149,7 +149,7 @@ for data in progressbar(test_loader, max_value=len(test_loader), redirect_stdout
         del out_probs
     
     if (previous_mask is None):
-        original_masks = (msk > 0.5 * 255).cpu().numpy().astype(np.uint8)
+        original_masks = (msk[0] > 0.5 * 255).cpu().numpy().astype(np.uint8)
         img_E = Image.fromarray(original_masks[target_id])
         img_E.save(os.path.join(this_out_path, '{}.png'.format(info['target_frame'][0])))
 
