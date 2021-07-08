@@ -80,7 +80,7 @@ prop_model.load_state_dict(prop_saved)
 for data in progressbar(test_loader, max_value=len(test_loader), redirect_stdout=True):
 
     rgb = data['rgb'].cuda()
-    msk = data['gt'][0]
+    msk = data['gt'][0].cuda()
     info = data['info']
     total_t = rgb.shape[1]
     target_id = info['target_id'][0]
