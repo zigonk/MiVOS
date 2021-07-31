@@ -87,9 +87,9 @@ for data in progressbar(test_loader, max_value=len(test_loader), redirect_stdout
     processor = FusionGenerator(prop_model, rgb, args.mem_freq)
     # Make this directory
     this_out_path = path.join(out_path, info['name'][0], info['eid'][0])
-    os.makedirs(this_out_path, exist_ok=True)
-    if (os.path.exists(os.path.join(this_out_path, '{}.png'.format(info['target_frame'][0])))):
-        continue
+    # os.makedirs(this_out_path, exist_ok=True)
+    # if (os.path.exists(os.path.join(this_out_path, '{}.png'.format(info['target_frame'][0])))):
+        # continue
     if (target_id == 0):
         previous_mask = None
     # Push mask of target id into memory
@@ -140,6 +140,7 @@ for data in progressbar(test_loader, max_value=len(test_loader), redirect_stdout
             output_mask = prob_Es[target_id]
 
         del out_probs
+    print(msk.shape[0])
     if (msk.shape[0] == 0):
         output_mask = np.zeros((msk.shape[-2], msk.shape[-1])).astype(np.uint8)
     elif (output_mask is None):
