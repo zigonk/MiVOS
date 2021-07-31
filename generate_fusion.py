@@ -92,7 +92,7 @@ for data in progressbar(test_loader, max_value=len(test_loader), redirect_stdout
     info = data['info']
     total_t = rgb.shape[1]
     target_id = info['target_id'][0]
-    processor = InferenceCore(prop_model, fusion_model, rgb, 1)
+    processor = InferenceCore(prop_model, fusion_model, rgb, mem_freq=1)
     # Make this directory
     this_out_path = path.join(out_path, info['name'][0], info['eid'][0])
     # os.makedirs(this_out_path, exist_ok=True)
@@ -107,7 +107,7 @@ for data in progressbar(test_loader, max_value=len(test_loader), redirect_stdout
     if len(usable_keys) != 0:
         this_msk = msk[usable_keys]
         print(usable_keys)
-        processor.interact(this_msk[:, target_id], target_id, target_id, target_id, False)
+        processor.interact(this_msk[:, target_id], target_id, add_interact=False)
     if previous_mask is not None and msk.shape[0] != 0:
         msk[:,0] = torch.from_numpy(test_dataset.All_to_onehot(previous_mask[np.newaxis,:], info['labels'][0].numpy())[0]).float()
 
@@ -140,7 +140,7 @@ for data in progressbar(test_loader, max_value=len(test_loader), redirect_stdout
             right_limit = min(total_t-1, frame+args.range)
         
         pred_range = range(left_limit, right_limit+1)
-        out_probs = processor.interact(this_msk[:,frame], frame, left_limit, right_limit)
+        out_probs = processor.interact(this_msk[:,frame], frame)
 
         for kidx, obj_id in enumerate(usable_keys):
             prob_Es = ((out_probs[kidx+1] > 0.5) *255).cpu().numpy().astype(np.uint8)
