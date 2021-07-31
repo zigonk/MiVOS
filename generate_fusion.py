@@ -138,8 +138,6 @@ for data in progressbar(test_loader, max_value=len(test_loader), redirect_stdout
         for kidx, obj_id in enumerate(usable_keys):
             prob_Es = ((out_probs[kidx+1] > 0.5) *255).cpu().numpy().astype(np.uint8)
             output_mask = prob_Es[target_id]
-            print(frame)
-
         del out_probs
     if (msk.shape[0] == 0):
         output_mask = np.zeros((msk.shape[-2], msk.shape[-1])).astype(np.uint8)
