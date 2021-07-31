@@ -4,6 +4,7 @@ Handles propagation and fusion
 See eval_semi_davis.py / eval_interactive_davis.py for examples
 """
 
+from typing import Tuple
 import torch
 import numpy as np
 import cv2
@@ -220,7 +221,7 @@ class InferenceCore:
             prob[k-1] = w 
         return aggregate_wbg(prob, keep_bg=True)
 
-    def interact(self, mask, idx, total_cb=None, step_cb=None):
+    def interact(self, mask, idx, total_cb=None, step_cb=None, add_interact=True):
         """
         Interact -> Propagate -> Fuse
 
@@ -230,7 +231,8 @@ class InferenceCore:
 
         Return: all mask results in np format for DAVIS evaluation
         """
-        self.interacted.add(idx)
+        if (add_interact):
+            self.interacted.add(idx)
 
         mask = mask.to(self.device)
         mask, _ = pad_divide_by(mask, 16, mask.shape[-2:])
