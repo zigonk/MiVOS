@@ -236,8 +236,6 @@ class InferenceCore:
         mask = mask.to(self.device)
         mask, _ = pad_divide_by(mask, 16, mask.shape[-2:])
         mask = aggregate_wbg(mask, keep_bg=True)
-        print(mask.shape)
-        print(self.prob1[:, idx].to(self.device).shape)
         self.mask_diff = mask - self.prob1[:, idx].to(self.device)
         self.pos_mask_diff = self.mask_diff.clamp(0, 1)
         self.neg_mask_diff = (-self.mask_diff).clamp(0, 1)
