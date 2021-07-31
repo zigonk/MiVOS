@@ -222,7 +222,7 @@ class InferenceCore:
             prob[k-1] = w 
         return aggregate_wbg(prob, keep_bg=True)
 
-    def interact(self, mask, idx, total_cb=None, step_cb=None, add_interact=True):
+    def interact(self, mask, idx, total_cb=None, step_cb=None, add_interact=True, prop_range=5):
         """
         Interact -> Propagate -> Fuse
 
@@ -260,8 +260,8 @@ class InferenceCore:
             total_num = front_limit - back_limit - 2 # -1 for shift, -1 for center frame
             total_cb(total_num)
 
-        forward_tc = self.do_pass(key_k, key_v, idx, True, step_cb=step_cb)
-        bakward_tc = self.do_pass(key_k, key_v, idx, False, step_cb=step_cb)
+        forward_tc = self.do_pass(key_k, key_v, idx, True, step_cb=step_cb, prop_range=prop_range)
+        bakward_tc = self.do_pass(key_k, key_v, idx, False, step_cb=step_cb, prop_range=prop_range)
         
         # This is a more memory-efficient argmax
         for ti in range(self.t):
