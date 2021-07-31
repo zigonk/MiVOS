@@ -140,7 +140,7 @@ for data in progressbar(test_loader, max_value=len(test_loader), redirect_stdout
             output_mask = prob_Es[target_id]
 
         del out_probs
-    print(msk.shape[0])
+    print(output_mask)
     if (msk.shape[0] == 0):
         output_mask = np.zeros((msk.shape[-2], msk.shape[-1])).astype(np.uint8)
     elif (output_mask is None):
