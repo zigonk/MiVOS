@@ -85,28 +85,33 @@ for data in progressbar(test_loader, max_value=len(test_loader), redirect_stdout
     total_t = rgb.shape[1]
     target_id = info['target_id'][0]
     processor = FusionGenerator(prop_model, rgb, args.mem_freq)
-    previous_mask = None
     # Make this directory
     this_out_path = path.join(out_path, info['name'][0], info['eid'][0])
     os.makedirs(this_out_path, exist_ok=True)
     # if (os.path.exists(os.path.join(this_out_path, '{}.png'.format(info['target_frame'][0])))):
     #     continue
+    if (target_id == 0):
+        previous_mask = None
     # Push mask of target id into memory
-    processor.reset(1)
-    this_msk = msk[usable_keys]
-    processor.interact_mask(this_msk[:, target_id], target_id, target_id, target_id)
-    if (previous_mask is not None) and target_id != 0:
+    usable_keys = []
+    if (msk[0,frame] > 0.5).sum() > 5*5:
+        usable_keys.append(0)
+    if len(usable_keys) != 0:
+        processor.reset(1)
+        this_msk = msk[usable_keys]
+        processor.interact_mask(this_msk[:, target_id], target_id, target_id, target_id)
+    if (previous_mask is not None):
         msk[:,0] = torch.from_numpy(test_dataset.All_to_onehot(previous_mask[np.new_axis,:], info['labels'][0])).float()
 
     # Fused mask from two frames nearby
-    previous_mask = None
+    output_mask = None
     msk.cuda()
     for frame in range(0, total_t, args.separation):
         if (frame == target_id):
             continue
         usable_keys = []
         for k in range(msk.shape[0]):
-            if (msk[k,frame] > 0.5).sum() > 10*10:
+            if (msk[k,frame] > 0.5).sum() > 5*5:
                 usable_keys.append(k)
         if len(usable_keys) == 0:
             continue
@@ -132,16 +137,15 @@ for data in progressbar(test_loader, max_value=len(test_loader), redirect_stdout
 
         for kidx, obj_id in enumerate(usable_keys):
             prob_Es = ((out_probs[kidx+1] > 0.5) *255).cpu().numpy().astype(np.uint8)
-            previous_mask = prob_Es[target_id]
-            img_E = Image.fromarray(prob_Es[target_id])
-            img_E.save(os.path.join(this_out_path, '{}.png'.format(info['target_frame'][0])))
+            output_mask = prob_Es[target_id]
 
         del out_probs
-    print(previous_mask)
-    if (previous_mask is None):
+    if (output_mask is None):
         original_masks = ((msk[0] > 0.5) * 255).cpu().numpy().astype(np.uint8)
-        img_E = Image.fromarray(original_masks[target_id][0])
-        img_E.save(os.path.join(this_out_path, '{}.png'.format(info['target_frame'][0])))
+        output_mask = original_masks[target_id][0]
+    imgE = Image.fromarray(output_mask)
+    imgE.save(os.path.join(this_out_path, '{}.png'.format(info['target_frame'][0])))
+    previous_mask = output_mask
 
 
     torch.cuda.empty_cache()
