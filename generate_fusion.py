@@ -94,8 +94,7 @@ for data in progressbar(test_loader, max_value=len(test_loader), redirect_stdout
         previous_mask = None
     # Push mask of target id into memory
     usable_keys = []
-    print(msk.shape)
-    if (msk[0,target_id] > 0.5).sum() > 5*5:
+    if msk.shape[0] != 0  and (msk[0,target_id] > 0.5).sum() > 5*5:
         usable_keys.append(0)
     if len(usable_keys) != 0:
         processor.reset(1)
