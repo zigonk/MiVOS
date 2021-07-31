@@ -105,7 +105,6 @@ for data in progressbar(test_loader, max_value=len(test_loader), redirect_stdout
     if msk.shape[0] != 0  and (msk[0,target_id] > 0.5).sum() > 10*10:
         usable_keys.append(0)
     if len(usable_keys) != 0:
-        processor.reset(1)
         this_msk = msk[usable_keys]
         processor.interact(this_msk[:, target_id], target_id, target_id, target_id, False)
     if previous_mask is not None and msk.shape[0] != 0:
@@ -128,7 +127,6 @@ for data in progressbar(test_loader, max_value=len(test_loader), redirect_stdout
             usable_keys = usable_keys[:5]
 
         k = len(usable_keys)
-        processor.reset(k)
         this_msk = msk[usable_keys]
 
 
