@@ -92,7 +92,7 @@ for data in progressbar(test_loader, max_value=len(test_loader), redirect_stdout
     info = data['info']
     total_t = rgb.shape[1]
     target_id = info['target_id'][0]
-    processor = InferenceCore(prop_model, fusion_model, rgb, mem_freq=1)
+    processor = InferenceCore(prop_model, fusion_model, rgb, num_objects=1, mem_freq=5)
     # Make this directory
     this_out_path = path.join(out_path, info['name'][0], info['eid'][0])
     # os.makedirs(this_out_path, exist_ok=True)
