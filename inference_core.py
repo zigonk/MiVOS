@@ -158,11 +158,13 @@ class InferenceCore:
         # Note that we never reach closest_ti, just the frame before it
         if forward:
             right_limit = max(idx+range, self.images.shape[1])
+            print(right_limit)
             this_range = range(idx+1, right_limit)
             step = +1
             end = closest_ti - 1
         else:
             left_limit = max(idx-range, -1)
+            print(left_limit)
             this_range = range(idx-1, left_limit, -1)
             step = -1
             end = closest_ti + 1
