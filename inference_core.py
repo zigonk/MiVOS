@@ -122,7 +122,7 @@ class InferenceCore:
 
         return result
 
-    def do_pass(self, key_k, key_v, idx, forward=True, step_cb=None, range = 5):
+    def do_pass(self, key_k, key_v, idx, forward=True, step_cb=None, prop_range = 5):
         """
         Do a complete pass that includes propagation and fusion
         key_k/key_v -  memory feature of the starting frame
@@ -157,14 +157,12 @@ class InferenceCore:
 
         # Note that we never reach closest_ti, just the frame before it
         if forward:
-            right_limit = max(idx+range, self.images.shape[1])
-            print(right_limit)
+            right_limit = max(idx+prop_range, self.images.shape[1])
             this_range = range(idx+1, right_limit)
             step = +1
             end = closest_ti - 1
         else:
-            left_limit = max(idx-range, -1)
-            print(left_limit)
+            left_limit = max(idx-prop_range, -1)
             this_range = range(idx-1, left_limit, -1)
             step = -1
             end = closest_ti + 1
