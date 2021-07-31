@@ -64,7 +64,6 @@ class YouTubeVOSTestDataset(Dataset):
     def To_onehot(self, mask, labels):
         M = np.zeros((len(labels), mask.shape[0], mask.shape[1]), dtype=np.uint8)
         for k, l in enumerate(labels):
-            print(mask, l)
             M[k] = (mask == l).astype(np.uint8)
         return M
     
