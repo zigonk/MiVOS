@@ -101,6 +101,7 @@ for data in progressbar(test_loader, max_value=len(test_loader), redirect_stdout
         this_msk = msk[usable_keys]
         processor.interact_mask(this_msk[:, target_id], target_id, target_id, target_id)
     if (previous_mask is not None):
+        print(previous_mask)
         msk[:,0] = torch.from_numpy(test_dataset.All_to_onehot(previous_mask[np.newaxis,:], info['labels'][0])).float()
 
     # Fused mask from two frames nearby
