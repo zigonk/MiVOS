@@ -152,6 +152,7 @@ for data in progressbar(test_loader, max_value=len(test_loader), redirect_stdout
     imgE = imgE.convert('L')
     imgE.save(os.path.join(this_out_path, '{}.png'.format(info['target_frame'][0])))
     previous_mask = output_mask
+    print('------')
 
 
     torch.cuda.empty_cache()
