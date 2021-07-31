@@ -106,6 +106,7 @@ for data in progressbar(test_loader, max_value=len(test_loader), redirect_stdout
         usable_keys.append(0)
     if len(usable_keys) != 0:
         this_msk = msk[usable_keys]
+        print(usable_keys)
         processor.interact(this_msk[:, target_id], target_id, target_id, target_id, False)
     if previous_mask is not None and msk.shape[0] != 0:
         msk[:,0] = torch.from_numpy(test_dataset.All_to_onehot(previous_mask[np.newaxis,:], info['labels'][0].numpy())[0]).float()

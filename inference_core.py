@@ -235,14 +235,13 @@ class InferenceCore:
 
         mask = mask.to(self.device)
         mask, _ = pad_divide_by(mask, 16, mask.shape[-2:])
+        mask = aggregate_wbg(mask, keep_bg=True)
         self.mask_diff = mask - self.prob1[:, idx].to(self.device)
         self.pos_mask_diff = self.mask_diff.clamp(0, 1)
         self.neg_mask_diff = (-self.mask_diff).clamp(0, 1)
 
         self.prob1[:, idx] = mask
         self.prob2[:, idx] = mask
-        print(self.get_image_buffered(idx))
-        print(mask[1:])
         key_k, key_v = self.prop_net.memorize(self.get_image_buffered(idx), mask[1:])
 
         if self.certain_mem_k is None:
