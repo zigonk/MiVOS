@@ -168,6 +168,7 @@ class InferenceCore:
             end = closest_ti + 1
 
         for ti in this_range:
+            print(ti)
             if prev_in_mem:
                 this_k = keys[:,:,:m_front]
                 this_v = values[:,:,:m_front]
