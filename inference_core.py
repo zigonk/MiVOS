@@ -222,7 +222,7 @@ class InferenceCore:
             prob[k-1] = w 
         return aggregate_wbg(prob, keep_bg=True)
 
-    def interact(self, mask, idx, total_cb=None, step_cb=None, add_interact=True, prop_range=5):
+    def interact(self, mask, idx, total_cb=None, step_cb=None, add_interact=True, prop_range=6):
         """
         Interact -> Propagate -> Fuse
 
