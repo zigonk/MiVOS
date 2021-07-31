@@ -122,7 +122,7 @@ class InferenceCore:
 
         return result
 
-    def do_pass(self, key_k, key_v, idx, forward=True, range = 5, step_cb=None):
+    def do_pass(self, key_k, key_v, idx, forward=True, step_cb=None, range = 5):
         """
         Do a complete pass that includes propagation and fusion
         key_k/key_v -  memory feature of the starting frame
