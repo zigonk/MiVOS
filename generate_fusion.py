@@ -141,13 +141,13 @@ for data in progressbar(test_loader, max_value=len(test_loader), redirect_stdout
             print(frame)
 
         del out_probs
-    print(info['target_frame'][0])
-    print(np.sum(output_mask))
     if (msk.shape[0] == 0):
         output_mask = np.zeros((msk.shape[-2], msk.shape[-1])).astype(np.uint8)
     elif (output_mask is None):
         original_masks = ((msk[0] > 0.5) * 255).cpu().numpy().astype(np.uint8)
         output_mask = original_masks[target_id][0]
+    print(info['target_frame'][0])
+    print(np.sum(output_mask))
     imgE = Image.fromarray(output_mask)
     imgE = imgE.convert('L')
     imgE.save(os.path.join(this_out_path, '{}.png'.format(info['target_frame'][0])))
