@@ -141,6 +141,7 @@ for data in progressbar(test_loader, max_value=len(test_loader), redirect_stdout
             print(frame)
 
         del out_probs
+    print(info['target_frame'][0])
     print(np.sum(output_mask))
     if (msk.shape[0] == 0):
         output_mask = np.zeros((msk.shape[-2], msk.shape[-1])).astype(np.uint8)
