@@ -8,6 +8,7 @@ from os import path
 from argparse import ArgumentParser
 
 import torch
+import time
 from torch.utils.data import Dataset, DataLoader
 import numpy as np
 from PIL import Image
@@ -113,6 +114,7 @@ for data in progressbar(test_loader, max_value=len(test_loader), redirect_stdout
     # Fused mask from two frames nearby
     output_mask = None
     msk.cuda()
+    current_time = time.time()
     for frame in range(0, total_t, args.separation):
         if (frame == target_id):
             continue
@@ -143,6 +145,9 @@ for data in progressbar(test_loader, max_value=len(test_loader), redirect_stdout
         for kidx, obj_id in enumerate(usable_keys):
             output_mask = out_probs[target_id] * 255
         del out_probs
+    end_time = time.time()
+    process_time = end_time - current_time
+    print(process_time)
     if (msk.shape[0] == 0):
         output_mask = np.zeros((msk.shape[-2], msk.shape[-1])).astype(np.uint8)
     elif (output_mask is None):
