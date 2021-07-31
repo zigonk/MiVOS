@@ -141,7 +141,7 @@ for data in progressbar(test_loader, max_value=len(test_loader), redirect_stdout
         
         pred_range = range(left_limit, right_limit+1)
         out_probs = processor.interact(this_msk[:,frame], frame)
-        print(out_probs.shape)
+        print(np.max(out_probs))
         for kidx, obj_id in enumerate(usable_keys):
             prob_Es = ((out_probs[kidx+1] > 0.5) *255).cpu().numpy().astype(np.uint8)
             output_mask = prob_Es[target_id]
