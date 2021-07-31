@@ -147,7 +147,6 @@ for data in progressbar(test_loader, max_value=len(test_loader), redirect_stdout
         del out_probs
     end_time = time.time()
     process_time = end_time - current_time
-    print(process_time)
     if (msk.shape[0] == 0):
         output_mask = np.zeros((msk.shape[-2], msk.shape[-1])).astype(np.uint8)
     elif (output_mask is None):
