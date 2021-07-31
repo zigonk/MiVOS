@@ -241,6 +241,8 @@ class InferenceCore:
 
         self.prob1[:, idx] = mask
         self.prob2[:, idx] = mask
+        print(self.get_image_buffered(idx))
+        print(mask[1:])
         key_k, key_v = self.prop_net.memorize(self.get_image_buffered(idx), mask[1:])
 
         if self.certain_mem_k is None:

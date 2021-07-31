@@ -141,7 +141,7 @@ class PropagationNetwork(nn.Module):
 
     def memorize(self, frame, masks): 
         k, _, h, w = masks.shape
-
+    
         # Extract memory key/value for a frame with multiple masks
         frame = frame.view(1, 3, h, w).repeat(k, 1, 1, 1)
         # Compute the "others" mask
