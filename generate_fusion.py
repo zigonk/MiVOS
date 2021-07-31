@@ -140,7 +140,9 @@ for data in progressbar(test_loader, max_value=len(test_loader), redirect_stdout
             output_mask = prob_Es[target_id]
 
         del out_probs
-    if (output_mask is None):
+    if (msk.shape[0] == 0):
+        output_mask = np.zeros((msk.shape[-2], msk.shape[-1]))
+    elif (output_mask is None):
         original_masks = ((msk[0] > 0.5) * 255).cpu().numpy().astype(np.uint8)
         output_mask = original_masks[target_id][0]
     imgE = Image.fromarray(output_mask)
