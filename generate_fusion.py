@@ -146,6 +146,7 @@ for data in progressbar(test_loader, max_value=len(test_loader), redirect_stdout
         original_masks = ((msk[0] > 0.5) * 255).cpu().numpy().astype(np.uint8)
         output_mask = original_masks[target_id][0]
     imgE = Image.fromarray(output_mask)
+    imgE = imgE.convert('L')
     imgE.save(os.path.join(this_out_path, '{}.png'.format(info['target_frame'][0])))
     previous_mask = output_mask
 
