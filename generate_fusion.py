@@ -88,13 +88,13 @@ for data in progressbar(test_loader, max_value=len(test_loader), redirect_stdout
     # Make this directory
     this_out_path = path.join(out_path, info['name'][0], info['eid'][0])
     os.makedirs(this_out_path, exist_ok=True)
-    # if (os.path.exists(os.path.join(this_out_path, '{}.png'.format(info['target_frame'][0])))):
-    #     continue
+    if (os.path.exists(os.path.join(this_out_path, '{}.png'.format(info['target_frame'][0])))):
+        continue
     if (target_id == 0):
         previous_mask = None
     # Push mask of target id into memory
     usable_keys = []
-    if msk.shape[0] != 0  and (msk[0,target_id] > 0.5).sum() > 5*5:
+    if msk.shape[0] != 0  and (msk[0,target_id] > 0.5).sum() > 10*10:
         usable_keys.append(0)
     if len(usable_keys) != 0:
         processor.reset(1)
@@ -111,7 +111,7 @@ for data in progressbar(test_loader, max_value=len(test_loader), redirect_stdout
             continue
         usable_keys = []
         for k in range(msk.shape[0]):
-            if (msk[k,frame] > 0.5).sum() > 5*5:
+            if (msk[k,frame] > 0.5).sum() > 10*10:
                 usable_keys.append(k)
         if len(usable_keys) == 0:
             continue
